@@ -9,6 +9,7 @@ lazy val root = (project in file("."))
     assembly / assemblyOutputPath := new File("tempoaware.jar"),
     assembly / assemblyMergeStrategy := {
       case "application.conf" => MergeStrategy.concat
+      case "reference.conf" => MergeStrategy.concat
       case PathList("META-INF", "services", _*) => MergeStrategy.filterDistinctLines
       case PathList("META-INF", _*) => MergeStrategy.discard
       case _ => MergeStrategy.first
