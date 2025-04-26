@@ -5,6 +5,14 @@ ThisBuild / scalaVersion := "2.13.16"
 lazy val root = (project in file("."))
   .settings(
     name := "tempomem",
+    assembly / mainClass := Some("pl.belicki.tempomem.Tempomem"),
+    assembly / assemblyOutputPath := new File("tempoaware.jar"),
+    assembly / assemblyMergeStrategy := {
+      case "application.conf" => MergeStrategy.concat
+      case PathList("META-INF", "services", _*) => MergeStrategy.filterDistinctLines
+      case PathList("META-INF", _*) => MergeStrategy.discard
+      case _ => MergeStrategy.first
+    },
     libraryDependencies ++= List(
       "org.playframework" %% "play-ahc-ws-standalone" % "3.1.0-M6",
       "org.playframework" %% "play-ws-standalone-json" % "3.1.0-M6",
