@@ -21,11 +21,12 @@ object Tempomem {
   private val logger = LoggerFactory.getLogger("Tempoaware")
 
   private val issueKeyCompleter = new IssueKeyCompleter
+  private val envMap = sys.env
 
-  private val tempoToken = sys.env("TEMPO_TOKEN")
-  private val jiraToken = sys.env("JIRA_TOKEN")
-  private val jiraUser = sys.env("JIRA_USER")
-  private val jiraUrl = sys.env("JIRA_URL")
+  private val tempoToken = envMap("TEMPO_TOKEN")
+  private val jiraToken = envMap("JIRA_TOKEN")
+  private val jiraUser = envMap("JIRA_USER")
+  private val jiraUrl = envMap("JIRA_URL")
 
   private implicit val system: ActorSystem = ActorSystem()
   private implicit val materializer: Materializer = SystemMaterializer(system).materializer
