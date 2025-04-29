@@ -11,7 +11,7 @@ To run an app four environment variables need to be set:
 - `JIRA_TOKEN` - token for Jira, you can create it under this
   address: https://id.atlassian.com/manage-profile/security/api-tokens
 - `JIRA_USER` - your Jira user (usually should be an email address that you use for Jira)
-- `JIRA_URL` - the address of yor company's Jira `https://{your-organization-name}.atlassian.net`
+- `JIRA_URL` - the address of your company's Jira `https://{your-organization-name}.atlassian.net`
 
 When the environment variables are set, you need to run [tempoaware.jar](tempoaware.jar) with java (at least 21):
 `java -jar tempoaware.jar`
