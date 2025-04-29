@@ -29,19 +29,19 @@ Base functionality, example command:
 [2025-04-29T20:37:54.318] [INFO] [Tempoaware] Added worklog with id: 69420.
 ```
 
-where:\
-`log` - name of the command\
-`PROJ-1234` - Jira issue key, autocompletes (by pressing tab key) with keys for issues that were recently logged (
-required) \
-`-sd=2025-04-29` - alternative: `--start-date=2025-04-29`; start date of the worklog in `yyyy-MM-dd` format (not
-required, defaults to current date) \
-`-st=08:00` - alternative: `--start-time=08:00`; start time of the worklog in `hh:mm` format (not required, defaults to
-end time of the previous worklog that day, which needs to exist) \
-`-ed=2025-04-29` - alternative: `--end-date=2025-04-29`; end date of the worklog in `yyyy-MM-dd` format (not required,
-defaults to current date) \
-`-et=08:00` - alternative: `--end-time=08:00`; end time of the worklog in `hh:mm` format (not required, defaults to
-current time)\
-`-d="Doing sth"` - alternative: `--description="Doing sth"`; description of the worklog (not required, defaults to
+where:
+- `log` - name of the command
+- `PROJ-1234` - Jira issue key, autocompletes (by pressing tab key) with keys for issues that were recently logged (
+required)
+- `-sd=2025-04-29` - alternative: `--start-date=2025-04-29`; start date of the worklog in `yyyy-MM-dd` format (not
+required, defaults to current date)
+- `-st=08:00` - alternative: `--start-time=08:00`; start time of the worklog in `hh:mm` format (not required, defaults to
+end time of the previous worklog that day, which needs to exist)
+- `-ed=2025-04-29` - alternative: `--end-date=2025-04-29`; end date of the worklog in `yyyy-MM-dd` format (not required,
+defaults to current date)
+- `-et=08:00` - alternative: `--end-time=08:00`; end time of the worklog in `hh:mm` format (not required, defaults to
+current time)
+- `-d="Doing sth"` - alternative: `--description="Doing sth"`; description of the worklog (not required, defaults to
 empty string)
 
 ### Undo
