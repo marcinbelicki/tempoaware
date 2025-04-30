@@ -8,6 +8,7 @@ import pl.belicki.tempomem.command.response.{DeleteLogResponse, LogResponse, Res
 import pl.belicki.tempomem.fetcher.{AccountIdFetcher, CachingFetcher, IssueIdFetcher, IssueKeyFetcher}
 import pl.belicki.tempomem.info.Info
 import pl.belicki.tempomem.info.Info._
+import pl.belicki.tempomem.util.ResponseHandler.FlatMapResponse
 import play.api.libs.json._
 import play.api.libs.ws.JsonBodyReadables.readableAsJson
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
@@ -62,9 +63,15 @@ class CommandConnector(
 
   private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
 
+  private val worklogsUrl = "https://api.tempo.io/4/worklogs"
+  private val worklogStatusCodeHandling: PartialFunction[Int, StandaloneWSRequest#Response => Future[StandaloneWSRequest#Response]] = {
+    case 200 => Future.successful
+    case 404 => _ => Future.failed(new IllegalStateException(s"Authenticated user is missing permission to fulfill the request for url $worklogsUrl"))
+  }
+
   def log(logCommand: LogCommand): Future[Response] =
     wsClient
-      .url("https://api.tempo.io/4/worklogs")
+      .url(worklogsUrl)
       .withHttpHeaders(tempoAuth)
       .post(
         JsObject(
@@ -89,15 +96,16 @@ class CommandConnector(
 
   def deleteLog(deleteLogCommand: DeleteLogCommand): Future[Response] =
     wsClient
-      .url(s"https://api.tempo.io/4/worklogs/${deleteLogCommand.id}")
+      .url(s"$worklogsUrl/${deleteLogCommand.id}")
       .withHttpHeaders(tempoAuth)
       .delete()
       .map(_ => DeleteLogResponse(deleteLogCommand.id))
 
 
+
   def getWorklogsQuery(from: LocalDate, to: LocalDate, orderBy: String): Future[StandaloneWSRequest#Response] =
     wsClient
-      .url("https://api.tempo.io/4/worklogs")
+      .url(worklogsUrl)
       .withHttpHeaders(tempoAuth)
       .withQueryStringParameters(
         "from" -> from.toString,
@@ -105,10 +113,12 @@ class CommandConnector(
         "orderBy" -> orderBy,
       )
       .get()
+      .flatMapStatus(worklogStatusCodeHandling)
+
 
   def getWorklogsQuery(from: LocalDate, to: LocalDate, orderBy: String, limit: Int): Future[StandaloneWSRequest#Response] =
     wsClient
-      .url("https://api.tempo.io/4/worklogs")
+      .url(worklogsUrl)
       .withHttpHeaders(tempoAuth)
       .withQueryStringParameters(
         "from" -> from.toString,
@@ -117,6 +127,7 @@ class CommandConnector(
         "limit" -> limit.toString
       )
       .get()
+      .flatMapStatus(worklogStatusCodeHandling)
 
   def getWorklogsObject(response: StandaloneWSRequest#Response): List[JsObject] =
     response.body[JsValue]
