@@ -10,6 +10,7 @@ import pl.belicki.tempomem.info.Info
 import pl.belicki.tempomem.info.Info._
 import pl.belicki.tempomem.util.ResponseHandler.FlatMapResponse
 import play.api.libs.json._
+import play.api.libs.ws.DefaultBodyReadables.readableAsString
 import play.api.libs.ws.JsonBodyReadables.readableAsJson
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{StandaloneWSClient, StandaloneWSRequest}
@@ -66,7 +67,7 @@ class CommandConnector(
   private val worklogsUrl = "https://api.tempo.io/4/worklogs"
   private val worklogStatusCodeHandling: PartialFunction[Int, StandaloneWSRequest#Response => Future[StandaloneWSRequest#Response]] = {
     case 200 => Future.successful
-    case 404 => _ => Future.failed(new IllegalStateException(s"Authenticated user is missing permission to fulfill the request for url $worklogsUrl"))
+    case 404 => response => Future.failed(new IllegalStateException(s"Authenticated user is missing permission to fulfill the request for url $worklogsUrl; response body: ${response.body[String]}"))
   }
 
   def log(logCommand: LogCommand): Future[Response] =
@@ -85,6 +86,10 @@ class CommandConnector(
           )
         )
       )
+      .flatMapStatus {
+        case 200 => Future.successful
+        case 400 => response => Future.failed(new IllegalStateException(s"Worklog cannot be created for some reason; response body: ${response.body[String]}"))
+      }
       .map(_.body[JsValue].as[JsObject])
       .map {
         jsObject =>
@@ -99,8 +104,11 @@ class CommandConnector(
       .url(s"$worklogsUrl/${deleteLogCommand.id}")
       .withHttpHeaders(tempoAuth)
       .delete()
+      .flatMapStatus {
+        case 204 => Future.successful
+        case 404 => response => Future.failed(new IllegalStateException(s"Worklog cannot be found in the system; response body: ${response.body[String]}"))
+      }
       .map(_ => DeleteLogResponse(deleteLogCommand.id))
-
 
 
   def getWorklogsQuery(from: LocalDate, to: LocalDate, orderBy: String): Future[StandaloneWSRequest#Response] =
@@ -243,9 +251,12 @@ class CommandConnector(
       response <- wsClient
         .url(s"https://api.tempo.io/4/worklogs/${updateLogCommand.id}")
         .withHttpHeaders(tempoAuth)
-        .put(
-          updateLogCommand.updated
-        )
+        .put(updateLogCommand.updated)
+        .flatMapStatus {
+          case 200 => Future.successful
+          case 400 => response => Future.failed(new IllegalStateException(s"Worklog cannot be updated for some reasons; response body: ${response.body[String]}"))
+          case 404 => response => Future.failed(new IllegalStateException(s"Worklog cannot be found in the system; response body: ${response.body[String]}"))
+        }
       id = response.body[JsValue].as[JsObject].value("tempoWorklogId").as[JsNumber].value.toLongExact
     } yield UpdateLogResponse(id)
 
