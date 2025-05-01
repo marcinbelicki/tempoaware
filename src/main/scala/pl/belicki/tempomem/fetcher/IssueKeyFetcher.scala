@@ -1,7 +1,7 @@
 package pl.belicki.tempomem.fetcher
 
-import org.jline.reader.Candidate
 import pl.belicki.tempomem.fetcher.IssueKeyFetcher.Info
+import pl.belicki.tempomem.util.ResponseHandler.FlatMapResponse
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.libs.ws.JsonBodyReadables.readableAsJson
 import play.api.libs.ws.{StandaloneWSClient, WSAuthScheme}
@@ -15,11 +15,13 @@ class IssueKeyFetcher(
                      )
                      (implicit ec: ExecutionContext, wsClient: StandaloneWSClient) extends Fetcher[Long, Info] {
 
-  override def fetchFuture(key: Long): Future[Info] =
+  override def fetchFuture(id: Long): Future[Info] = {
+    val url = s"$jiraUrl/rest/api/3/issue/$id"
     wsClient
-      .url(s"$jiraUrl/rest/api/3/issue/$key")
+      .url(url)
       .withAuth(jiraUser, jiraToken, WSAuthScheme.BASIC)
       .get()
+      .flatMapUnauthorizedAndNotFound(url)
       .map {
         response =>
           val responseObject = response.body[JsValue].as[JsObject].value
@@ -31,6 +33,7 @@ class IssueKeyFetcher(
           )
 
       }
+  }
 
 }
 
