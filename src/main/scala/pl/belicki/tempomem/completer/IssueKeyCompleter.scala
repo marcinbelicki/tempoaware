@@ -16,7 +16,7 @@ class IssueKeyCompleter extends Completer {
       .get()
       .foreach(candidates.add)
 
-  def refreshLatestWorklogs(commandConnector: CommandConnector)(cutionContext: ExecutionContext): IorTNec[Unit] =
+  def refreshLatestWorklogs(commandConnector: CommandConnector)(implicit ec: ExecutionContext): IorTNec[Unit] =
     for {
       latestIssueCandidates <- commandConnector.getLatestWorklogsCandidates
     } yield taskCandidates.set(latestIssueCandidates)
