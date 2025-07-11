@@ -4,7 +4,7 @@ Tempoaware is a terminal application which uses Jira Tempo API and Jira API to m
 
 ## Running app
 
-To run an app four environment variables need to be set:
+To run the app, four environment variables need to be set:
 
 - `TEMPO_TOKEN` - token for the Tempo app, you can create it under this address
   `https://{your-organization-name}.atlassian.net/plugins/servlet/ac/io.tempo.jira/tempo-app#!/configuration/api-integration`
