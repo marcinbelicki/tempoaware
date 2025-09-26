@@ -2,7 +2,11 @@ package pl.belicki.tempomem.command.aggregator
 
 import org.jline.builtins.Completers.{OptDesc, OptionCompleter}
 import org.jline.reader.Completer
-import org.jline.reader.impl.completer.{ArgumentCompleter, NullCompleter, StringsCompleter}
+import org.jline.reader.impl.completer.{
+  ArgumentCompleter,
+  NullCompleter,
+  StringsCompleter
+}
 import pl.belicki.tempomem.command.aggregator.argument.BareArgument
 import pl.belicki.tempomem.command.aggregator.parameter.Parameter
 
@@ -17,7 +21,8 @@ trait WithArgumentsAggregator extends UnapplierAggregator {
 
   protected def arguments: LazyList[BareArgument[_, Aggregator]]
 
-  private lazy val parametersAndArguments: LazyList[ValueExtractor[_, Aggregator]] = parameters ++ arguments
+  private lazy val parametersAndArguments
+      : LazyList[ValueExtractor[_, Aggregator]] = parameters ++ arguments
 
   private object AggregatedValue {
     def unapply(command: String): Option[(Aggregator, String)] =
@@ -27,9 +32,10 @@ trait WithArgumentsAggregator extends UnapplierAggregator {
   }
 
   override lazy val commandCompleter: Completer = {
-    val optionCompleter: java.util.function.Function[String, java.util.Collection[OptDesc]] = {
+    val optionCompleter
+        : java.util.function.Function[String, java.util.Collection[OptDesc]] = {
       case `name` => parameters.map(_.optDesc).asJava
-      case _ => Nil.asJava
+      case _      => Nil.asJava
     }
 
     new ArgumentCompleter(
@@ -51,9 +57,8 @@ trait WithArgumentsAggregator extends UnapplierAggregator {
   def unapply(command: String): Option[(Aggregator, String)] =
     Regex
       .unapplySeq(command)
-      .collect {
-        case List(rest) => (this, rest)
+      .collect { case List(rest) =>
+        (this, rest)
       }
-
 
 }

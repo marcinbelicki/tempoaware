@@ -9,13 +9,22 @@ import Info.{InfoType, IorTNec}
 
 import scala.concurrent.ExecutionContext
 
-class EmptyAggregator(taskKeyCompleter: Completer, undoAggregator: UndoAggregator) extends Aggregator with AggregatedAggregator {
+class EmptyAggregator(
+    taskKeyCompleter: Completer,
+    undoAggregator: UndoAggregator
+) extends Aggregator
+    with AggregatedAggregator {
 
-  override def toCommand(commandConnector: CommandConnector)(implicit ec: ExecutionContext): IorTNec[Command] = {
-    IorT.leftT(NonEmptyChain.one(Info("Command not recognized.", InfoType.Error)))
+  override def toCommand(
+      commandConnector: CommandConnector
+  )(implicit ec: ExecutionContext): IorTNec[Command] = {
+    IorT.leftT(
+      NonEmptyChain.one(Info("Command not recognized.", InfoType.Error))
+    )
   }
 
-  override lazy val subAggregators: LazyList[Aggregator with UnapplierAggregator] = LazyList(
+  override lazy val subAggregators
+      : LazyList[Aggregator with UnapplierAggregator] = LazyList(
     new EmptyLogAggregator(taskKeyCompleter),
     undoAggregator,
     ExtendLastAggregator,

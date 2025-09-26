@@ -10,8 +10,11 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration.Duration
 
 trait CachingFetcher[K, R] extends Fetcher[K, R] {
-  private val underlyingGuavaCache = CacheBuilder.newBuilder().maximumSize(10000L).build[String, Entry[R]]
-  private implicit val scalaCacheGuava: Cache[R] = GuavaCache(underlyingGuavaCache)
+  private val underlyingGuavaCache =
+    CacheBuilder.newBuilder().maximumSize(10000L).build[String, Entry[R]]
+  private implicit val scalaCacheGuava: Cache[R] = GuavaCache(
+    underlyingGuavaCache
+  )
 
   implicit protected def ec: ExecutionContext
 

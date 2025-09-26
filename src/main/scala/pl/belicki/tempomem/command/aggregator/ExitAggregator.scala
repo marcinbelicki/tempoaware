@@ -7,11 +7,18 @@ import pl.belicki.tempomem.info.Info.{InfoType, IorTNec}
 
 import scala.concurrent.ExecutionContext
 
-object ExitAggregator extends Aggregator with UnapplierAggregator with OneWordAggregator {
+object ExitAggregator
+    extends Aggregator
+    with UnapplierAggregator
+    with OneWordAggregator {
   override def isNotExit: Boolean = false
 
   override protected val word: String = "exit"
 
-  override def toCommand(commandConnector: CommandConnector)(implicit ec: ExecutionContext): IorTNec[Command] =
-    IorT.leftT(NonEmptyChain.one(Info("No command for ExitAggregator.", InfoType.Error)))
+  override def toCommand(
+      commandConnector: CommandConnector
+  )(implicit ec: ExecutionContext): IorTNec[Command] =
+    IorT.leftT(
+      NonEmptyChain.one(Info("No command for ExitAggregator.", InfoType.Error))
+    )
 }

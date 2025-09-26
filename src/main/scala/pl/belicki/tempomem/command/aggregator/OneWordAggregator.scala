@@ -2,7 +2,11 @@ package pl.belicki.tempomem.command.aggregator
 
 import org.jline.builtins.Completers.{OptDesc, OptionCompleter}
 import org.jline.reader.Completer
-import org.jline.reader.impl.completer.{ArgumentCompleter, NullCompleter, StringsCompleter}
+import org.jline.reader.impl.completer.{
+  ArgumentCompleter,
+  NullCompleter,
+  StringsCompleter
+}
 
 import scala.jdk.CollectionConverters.SeqHasAsJava
 
@@ -18,10 +22,13 @@ trait OneWordAggregator {
       .unapplySeq(command)
       .map(_ => (this, ""))
 
-  override val Aggregate: PartialFunction[String, (Aggregator, String)] = PartialFunction.empty
+  override val Aggregate: PartialFunction[String, (Aggregator, String)] =
+    PartialFunction.empty
 
   override lazy val commandCompleter: Completer = {
-    val optionCompleter: java.util.function.Function[String, java.util.Collection[OptDesc]] = _ => Nil.asJava
+    val optionCompleter
+        : java.util.function.Function[String, java.util.Collection[OptDesc]] =
+      _ => Nil.asJava
 
     new ArgumentCompleter(
       new StringsCompleter(word),

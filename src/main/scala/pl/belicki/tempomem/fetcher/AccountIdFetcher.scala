@@ -11,10 +11,11 @@ import java.time.ZoneId
 import scala.concurrent.{ExecutionContext, Future}
 
 class AccountIdFetcher(
-                        jiraToken: String,
-                        jiraUser: String,
-                        jiraUrl: String,
-                      )(implicit ec: ExecutionContext, wsClient: StandaloneWSClient) extends Fetcher[Unit, Info] {
+    jiraToken: String,
+    jiraUser: String,
+    jiraUrl: String
+)(implicit ec: ExecutionContext, wsClient: StandaloneWSClient)
+    extends Fetcher[Unit, Info] {
 
   private val request = wsClient
     .url(s"$jiraUrl/rest/api/3/myself")
@@ -24,22 +25,21 @@ class AccountIdFetcher(
     request
       .get()
       .flatMapUnauthorizedAndNotFound(request.url)
-      .map {
-        response =>
-          response.status
-          val value = response.body[JsValue].as[JsObject].value
+      .map { response =>
+        response.status
+        val value = response.body[JsValue].as[JsObject].value
 
-          Info(
-            accountId = value("accountId").as[JsString].value,
-            zoneId = ZoneId.of(value("timeZone").as[JsString].value)
-          )
+        Info(
+          accountId = value("accountId").as[JsString].value,
+          zoneId = ZoneId.of(value("timeZone").as[JsString].value)
+        )
 
       }
 }
 
 object AccountIdFetcher {
   case class Info(
-                   accountId: String,
-                   zoneId: ZoneId
-                 )
+      accountId: String,
+      zoneId: ZoneId
+  )
 }

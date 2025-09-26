@@ -14,7 +14,9 @@ trait Aggregator {
 
   val Aggregate: PartialFunction[String, (Aggregator, String)]
 
-  def toCommand(commandConnector: CommandConnector)(implicit ec: ExecutionContext): IorTNec[Command]
+  def toCommand(commandConnector: CommandConnector)(implicit
+      ec: ExecutionContext
+  ): IorTNec[Command]
 
   def commandCompleter: Completer = NullCompleter.INSTANCE
 
@@ -28,7 +30,8 @@ object Aggregator {
     @tailrec
     def helper(aggregator: Aggregator, rest: String): Aggregator = {
       rest match {
-        case aggregator.Aggregate((aggregator, rest)) => helper(aggregator, rest)
+        case aggregator.Aggregate((aggregator, rest)) =>
+          helper(aggregator, rest)
         case _ => aggregator
       }
     }

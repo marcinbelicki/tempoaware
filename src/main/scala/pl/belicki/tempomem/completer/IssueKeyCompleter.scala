@@ -11,12 +11,18 @@ import scala.concurrent.{ExecutionContext, Future}
 class IssueKeyCompleter extends Completer {
   private val taskCandidates = new AtomicReference[Seq[Candidate]](List.empty)
 
-  override def complete(reader: LineReader, line: ParsedLine, candidates: util.List[Candidate]): Unit =
+  override def complete(
+      reader: LineReader,
+      line: ParsedLine,
+      candidates: util.List[Candidate]
+  ): Unit =
     taskCandidates
       .get()
       .foreach(candidates.add)
 
-  def refreshLatestWorklogs(commandConnector: CommandConnector)(implicit ec: ExecutionContext): IorTNec[Unit] =
+  def refreshLatestWorklogs(
+      commandConnector: CommandConnector
+  )(implicit ec: ExecutionContext): IorTNec[Unit] =
     for {
       latestIssueCandidates <- commandConnector.getLatestWorklogsCandidates
     } yield taskCandidates.set(latestIssueCandidates)

@@ -1,7 +1,10 @@
 package pl.belicki.tempomem.command.aggregator.parameter
 
 import org.jline.builtins.Completers.OptDesc
-import pl.belicki.tempomem.command.aggregator.{QuotesOrNoSpaceMatcher, ValueExtractor}
+import pl.belicki.tempomem.command.aggregator.{
+  QuotesOrNoSpaceMatcher,
+  ValueExtractor
+}
 
 trait Parameter[T, V] extends ValueExtractor[T, V] {
 
@@ -15,11 +18,13 @@ trait Parameter[T, V] extends ValueExtractor[T, V] {
 
   lazy val optDesc = new OptDesc(short, long, description)
 
-  override protected def extractString(command: String): Option[(String, String)] =
+  override protected def extractString(
+      command: String
+  ): Option[(String, String)] =
     Regex
       .unapplySeq(command)
-      .collect {
-        case List(QuotesOrNoSpaceMatcher(value, rest)) => (value, rest)
+      .collect { case List(QuotesOrNoSpaceMatcher(value, rest)) =>
+        (value, rest)
       }
 
 }

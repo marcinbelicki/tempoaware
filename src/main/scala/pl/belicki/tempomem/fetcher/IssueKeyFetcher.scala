@@ -9,11 +9,11 @@ import play.api.libs.ws.{StandaloneWSClient, WSAuthScheme}
 import scala.concurrent.{ExecutionContext, Future}
 
 class IssueKeyFetcher(
-                       jiraToken: String,
-                       jiraUser: String,
-                       jiraUrl: String,
-                     )
-                     (implicit ec: ExecutionContext, wsClient: StandaloneWSClient) extends Fetcher[Long, Info] {
+    jiraToken: String,
+    jiraUser: String,
+    jiraUrl: String
+)(implicit ec: ExecutionContext, wsClient: StandaloneWSClient)
+    extends Fetcher[Long, Info] {
 
   override def fetchFuture(id: Long): Future[Info] = {
     val url = s"$jiraUrl/rest/api/3/issue/$id"
@@ -22,15 +22,19 @@ class IssueKeyFetcher(
       .withAuth(jiraUser, jiraToken, WSAuthScheme.BASIC)
       .get()
       .flatMapUnauthorizedAndNotFound(url)
-      .map {
-        response =>
-          val responseObject = response.body[JsValue].as[JsObject].value
-          val key = responseObject("key").as[JsString].value
-          val summary = responseObject("fields").as[JsObject].value("summary").as[JsString].value
+      .map { response =>
+        val responseObject = response.body[JsValue].as[JsObject].value
+        val key            = responseObject("key").as[JsString].value
+        val summary = responseObject("fields")
+          .as[JsObject]
+          .value("summary")
+          .as[JsString]
+          .value
 
-          Info(
-            key, summary
-          )
+        Info(
+          key,
+          summary
+        )
 
       }
   }
@@ -39,7 +43,7 @@ class IssueKeyFetcher(
 
 object IssueKeyFetcher {
   case class Info(
-                   key: String,
-                   summary: String
-                 )
+      key: String,
+      summary: String
+  )
 }

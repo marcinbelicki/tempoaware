@@ -8,13 +8,23 @@ import pl.belicki.tempomem.info.Info.{InfoType, IorTNec}
 import java.util.concurrent.LinkedBlockingQueue
 import scala.concurrent.ExecutionContext
 
-class UndoAggregator extends Aggregator with UnapplierAggregator with OneWordAggregator {
+class UndoAggregator
+    extends Aggregator
+    with UnapplierAggregator
+    with OneWordAggregator {
 
   private val undosQueue = new LinkedBlockingQueue[Command](Int.MaxValue)
 
-  override def toCommand(commandConnector: CommandConnector)(implicit ec: ExecutionContext): IorTNec[Command] =
+  override def toCommand(
+      commandConnector: CommandConnector
+  )(implicit ec: ExecutionContext): IorTNec[Command] =
     undosQueue.poll() match {
-      case null => IorT.leftT(NonEmptyChain.one(Info("Did not find the undo action.", InfoType.Warn)))
+      case null =>
+        IorT.leftT(
+          NonEmptyChain.one(
+            Info("Did not find the undo action.", InfoType.Warn)
+          )
+        )
       case undo => IorT.pure(undo)
     }
 

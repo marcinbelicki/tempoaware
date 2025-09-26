@@ -7,6 +7,8 @@ import pl.belicki.tempomem.info.Info.IorTNec
 import scala.concurrent.ExecutionContext
 
 case class DeleteLogCommand(id: Long) extends Command {
-  override def execute(commandConnector: CommandConnector)(implicit ec: ExecutionContext): IorTNec[Response] =
+  override def execute(commandConnector: CommandConnector)(implicit
+      ec: ExecutionContext
+  ): IorTNec[Response] =
     IorT.liftF(commandConnector.deleteLog(this))
 }

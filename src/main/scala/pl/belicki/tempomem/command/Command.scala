@@ -7,6 +7,8 @@ import scala.concurrent.ExecutionContext
 
 trait Command {
 
-  def execute(commandConnector: CommandConnector)(implicit ec: ExecutionContext): IorTNec[Response]
+  def execute(commandConnector: CommandConnector)(implicit
+      ec: ExecutionContext
+  ): IorTNec[Response]
 
 }

@@ -8,14 +8,16 @@ import java.time.{LocalDate, LocalDateTime, LocalTime}
 import scala.concurrent.ExecutionContext
 
 case class LogCommand(
-                       issueId: Long,
-                       startDateTime: LocalDateTime,
-                       timeSpentSeconds: Long,
-                       authorAccountId: String,
-                       description: String
-                     ) extends Command {
+    issueId: Long,
+    startDateTime: LocalDateTime,
+    timeSpentSeconds: Long,
+    authorAccountId: String,
+    description: String
+) extends Command {
   lazy val startDate: LocalDate = startDateTime.toLocalDate
   lazy val startTime: LocalTime = startDateTime.toLocalTime
 
-  override def execute(commandConnector: CommandConnector)(implicit ec: ExecutionContext): IorTNec[Response] = IorT.liftF(commandConnector.log(this))
+  override def execute(commandConnector: CommandConnector)(implicit
+      ec: ExecutionContext
+  ): IorTNec[Response] = IorT.liftF(commandConnector.log(this))
 }

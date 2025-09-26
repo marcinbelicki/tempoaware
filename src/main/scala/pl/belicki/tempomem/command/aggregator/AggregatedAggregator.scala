@@ -20,7 +20,6 @@ trait AggregatedAggregator extends Aggregator {
     case SubAggregators(aggregator, rest) => (aggregator, rest)
   }
 
-
   override lazy val commandCompleter: Completer = new AggregateCompleter(
     subAggregators.map(_.commandCompleter).asJava
   )
