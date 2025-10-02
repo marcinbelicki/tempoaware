@@ -1,7 +1,6 @@
 package pl.belicki.tempomem.fetcher
 
 import pl.belicki.tempomem.fetcher.AccountIdFetcher.Info
-import pl.belicki.tempomem.util.ResponseHandler
 import pl.belicki.tempomem.util.ResponseHandler.FlatMapResponse
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.libs.ws.JsonBodyReadables.readableAsJson

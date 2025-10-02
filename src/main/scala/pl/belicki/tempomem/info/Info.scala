@@ -65,17 +65,17 @@ object Info {
               case Ior.Both(leftB, rightB) => Ior.both(leftB, (a, rightB))
               case Ior.Left(b)             => Ior.left(b)
             }
-          case Ior.Both(leftA: NonEmptyChain[Info], rightA) =>
+          case Ior.Both(leftA, rightA) =>
             valueB match {
               case Ior.Right(b) => Ior.both(leftA, (rightA, b))
-              case Ior.Both(leftB: NonEmptyChain[Info], rightB) =>
+              case Ior.Both(leftB, rightB) =>
                 Ior.both(leftA.combine(leftB), (rightA, rightB))
               case Ior.Left(b) => Ior.left(leftA.combine(b))
             }
-          case Ior.Left(a: NonEmptyChain[Info]) =>
+          case Ior.Left(a) =>
             valueB match {
               case Ior.Right(_) => Ior.Left(a)
-              case Ior.Both(leftB: NonEmptyChain[Info], _) =>
+              case Ior.Both(leftB, _) =>
                 Ior.left(a.combine(leftB))
               case Ior.Left(b) => Ior.left(a.combine(b))
             }

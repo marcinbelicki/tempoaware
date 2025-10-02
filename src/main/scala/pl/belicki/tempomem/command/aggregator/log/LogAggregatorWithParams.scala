@@ -13,7 +13,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import Info.flatMap
 import cats.implicits.{catsSyntaxTuple2Semigroupal, catsSyntaxTuple5Semigroupal}
 
-import java.time.temporal.{ChronoUnit, TemporalUnit}
+import java.time.temporal.ChronoUnit
 
 case class LogAggregatorWithParams(
     startTime: IorNec[Info, Chain[LocalTime]] = Ior.right(Chain.nil),
@@ -200,7 +200,7 @@ case class LogAggregatorWithParams(
       finalIssueId(commandConnector),
       startDateTime(commandConnector),
       endDateTime,
-      IorT.liftF(commandConnector.accountIdFetcher.fetchFuture()): IorTNec[
+      IorT.liftF(commandConnector.accountIdFetcher.fetchFuture(())): IorTNec[
         AccountIdFetcher.Info
       ]
     ).flatMapN {

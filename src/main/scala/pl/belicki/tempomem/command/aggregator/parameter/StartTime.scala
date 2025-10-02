@@ -1,6 +1,6 @@
 package pl.belicki.tempomem.command.aggregator.parameter
 
-import cats.data.{Chain, Ior, IorNec, NonEmptyChain}
+import cats.data.{Chain, Ior}
 import pl.belicki.tempomem.info.Info
 import pl.belicki.tempomem.info.Info.{InfoType, IorNecChain}
 

@@ -1,14 +1,12 @@
 package pl.belicki.tempomem.command.aggregator
 
-import cats.data.{Ior, IorT, NonEmptyChain, NonEmptyList}
 import org.jline.reader.Completer
 import org.jline.reader.impl.completer.NullCompleter
 import pl.belicki.tempomem.command.{Command, CommandConnector}
-import pl.belicki.tempomem.info.Info
 import pl.belicki.tempomem.info.Info.IorTNec
 
 import scala.annotation.tailrec
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 trait Aggregator {
 

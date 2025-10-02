@@ -6,7 +6,7 @@ import pl.belicki.tempomem.info.Info.IorTNec
 
 import java.util
 import java.util.concurrent.atomic.AtomicReference
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class IssueKeyCompleter extends Completer {
   private val taskCandidates = new AtomicReference[Seq[Candidate]](List.empty)

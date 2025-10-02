@@ -1,13 +1,13 @@
 package pl.belicki.tempomem.command.aggregator.log
 
-import cats.data.{Chain, IorNec, IorT, NonEmptyChain}
+import cats.data.{IorT, NonEmptyChain}
 import org.jline.reader.Completer
 import pl.belicki.tempomem.command.{Command, CommandConnector}
 import pl.belicki.tempomem.info.Info
 import pl.belicki.tempomem.info.Info.{InfoType, IorNecChain, IorTNec}
 
 import java.time.{LocalDate, LocalTime}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class EmptyLogAggregator(protected val taskKeyCompleter: Completer)
     extends LogAggregator {

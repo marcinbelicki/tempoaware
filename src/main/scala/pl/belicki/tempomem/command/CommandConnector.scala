@@ -206,7 +206,7 @@ class CommandConnector(
 
   def getLatestWorklogsCandidates: IorTNec[Seq[Candidate]] =
     for {
-      accountInfo <- accountIdFetcher.fetch()
+      accountInfo <- accountIdFetcher.fetch(())
       today      = LocalDate.now(accountInfo.zoneId)
       weekBefore = today.minusWeeks(1)
       latestWorklogs <- getLatestWorklogs(weekBefore, today, "START_DATE_TIME")
@@ -255,7 +255,7 @@ class CommandConnector(
 
   private def fetchZoneId: IorTNec[ZoneId] =
     for {
-      accountInfo <- accountIdFetcher.fetch()
+      accountInfo <- accountIdFetcher.fetch(())
     } yield accountInfo.zoneId
 
   private def getLatestWorklogToday(zoneId: ZoneId): IorTNec[JsObject] = {
@@ -288,7 +288,7 @@ class CommandConnector(
   def getUpdateLastToNowCommand: IorTNec[Command] = {
     import cats.Invariant.catsInstancesForFuture
     for {
-      accountInfo <- accountIdFetcher.fetch()
+      accountInfo <- accountIdFetcher.fetch(())
       zoneId          = accountInfo.zoneId
       authorAccountId = accountInfo.accountId
       latestWorklog <- getLatestWorklogToday(zoneId)

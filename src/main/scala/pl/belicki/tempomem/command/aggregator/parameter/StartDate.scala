@@ -1,11 +1,11 @@
 package pl.belicki.tempomem.command.aggregator.parameter
 
-import cats.data.{Chain, Ior, IorNec}
+import cats.data.{Chain, Ior}
 import pl.belicki.tempomem.info.Info
 import pl.belicki.tempomem.info.Info.{InfoType, IorNecChain}
 
 import java.time.format.DateTimeParseException
-import java.time.{LocalDate, LocalTime}
+import java.time.LocalDate
 
 class StartDate[V](
     protected val transformValue: IorNecChain[LocalDate] => V

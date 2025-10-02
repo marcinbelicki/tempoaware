@@ -1,6 +1,21 @@
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
-ThisBuild / scalaVersion := "2.13.16"
+inThisBuild(
+  List(
+    scalaVersion      := "2.13.16",
+    semanticdbEnabled := true,
+    semanticdbVersion := scalafixSemanticdb.revision,
+    scalacOptions += {
+      if (scalaVersion.value.startsWith("2.12"))
+        "-Ywarn-unused-import"
+      else
+        "-Wunused:imports"
+    },
+    scalacOptions ++= List(
+      "-deprecation"
+    )
+  )
+)
 
 lazy val root = (project in file("."))
   .settings(

@@ -1,6 +1,6 @@
 package pl.belicki.tempomem
 
-import cats.data.{Ior, IorT, NonEmptyChain}
+import cats.data.Ior
 import org.apache.pekko.Done
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.stream.scaladsl.{Sink, Source}
@@ -19,11 +19,10 @@ import pl.belicki.tempomem.command.aggregator.{
   UndoAggregator
 }
 import pl.belicki.tempomem.completer.IssueKeyCompleter
-import pl.belicki.tempomem.info.Info
+
 import play.api.libs.ws.ahc._
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 import scala.util.control.NonFatal
 
 object Tempomem {
@@ -66,7 +65,7 @@ object Tempomem {
     .build()
 
   private def runStream: Future[Done] = Source
-    .repeat()
+    .repeat(())
     .map(_ => reader.readLine("> "))
     .map(Aggregator.aggregate(emptyAggregator))
     .takeWhile(_.isNotExit)
