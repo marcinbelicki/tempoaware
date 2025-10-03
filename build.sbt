@@ -34,7 +34,7 @@ lazy val root = (project in file("."))
       "org.apache.pekko"  %% "pekko-stream"            % "1.2.1",
       "com.github.cb372"  %% "scalacache-core"         % "0.28.0",
       "com.github.cb372"  %% "scalacache-guava"        % "0.28.0",
-      "ch.qos.logback"     % "logback-classic"         % "1.5.18",
+      "ch.qos.logback"     % "logback-classic"         % "1.5.19",
       "org.apache.pekko"  %% "pekko-slf4j"             % "1.2.1",
       "org.typelevel"     %% "cats-core"               % "2.13.0",
       "org.scalatest"     %% "scalatest"               % "3.3.0-SNAP4" % Test
