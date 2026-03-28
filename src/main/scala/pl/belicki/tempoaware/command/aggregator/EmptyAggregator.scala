@@ -3,9 +3,10 @@ package pl.belicki.tempoaware.command.aggregator
 import cats.data.{IorT, NonEmptyChain}
 import org.jline.reader.Completer
 import pl.belicki.tempoaware.command.aggregator.log.EmptyLogAggregator
+import pl.belicki.tempoaware.command.aggregator.open.EmptyOpenAggregator
 import pl.belicki.tempoaware.command.{Command, CommandConnector}
 import pl.belicki.tempoaware.info.Info
-import Info.{InfoType, IorTNec}
+import pl.belicki.tempoaware.info.Info.{InfoType, IorTNec}
 
 import scala.concurrent.ExecutionContext
 
@@ -26,6 +27,7 @@ class EmptyAggregator(
   override lazy val subAggregators
       : LazyList[Aggregator with UnapplierAggregator] = LazyList(
     new EmptyLogAggregator(taskKeyCompleter),
+    new EmptyOpenAggregator(taskKeyCompleter),
     undoAggregator,
     ExtendLastAggregator,
     ExitAggregator

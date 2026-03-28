@@ -4,12 +4,7 @@ import cats.data.{IorT, NonEmptyChain}
 import cats.implicits.toTraverseOps
 import org.jline.reader.Candidate
 import pl.belicki.tempoaware.command.aggregator.UndoAggregator
-import pl.belicki.tempoaware.command.response.{
-  DeleteLogResponse,
-  LogResponse,
-  Response,
-  UpdateLogResponse
-}
+import pl.belicki.tempoaware.command.response._
 import pl.belicki.tempoaware.fetcher.{
   AccountIdFetcher,
   CachingFetcher,
@@ -25,6 +20,8 @@ import play.api.libs.ws.JsonBodyReadables.readableAsJson
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{StandaloneWSClient, StandaloneWSRequest}
 
+import java.awt.Desktop
+import java.net.URI
 import java.time._
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -355,5 +352,14 @@ class CommandConnector(
         .value
         .toLongExact
     } yield UpdateLogResponse(id)
+
+  def openTaskKey(taskKey: String, desktop: Desktop)(implicit
+      ec: ExecutionContext
+  ): IorTNec[Response] =
+    IorT
+      .rightT[Future, NonEmptyChain[Info]](
+        desktop.browse(new URI(s"$jiraUrl/browse/$taskKey"))
+      )
+      .map[Response](_ => OpenResponse)
 
 }
