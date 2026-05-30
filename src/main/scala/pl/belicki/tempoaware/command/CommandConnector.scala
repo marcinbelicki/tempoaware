@@ -20,7 +20,6 @@ import play.api.libs.ws.JsonBodyReadables.readableAsJson
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{StandaloneWSClient, StandaloneWSRequest}
 
-import java.awt.Desktop
 import java.net.URI
 import java.time._
 import java.time.format.DateTimeFormatter
@@ -32,10 +31,14 @@ class CommandConnector(
     tempoToken: String,
     jiraToken: String,
     jiraUser: String,
-    jiraUrl: String,
+    val jiraUrl: String,
     undoAggregator: UndoAggregator
 )(implicit ec: ExecutionContext, wsClient: StandaloneWSClient) {
 
+  private lazy val tempoUrl =
+    s"$jiraUrl/plugins/servlet/ac/io.tempo.jira/tempo-app"
+  lazy val tempoUri     = new URI(tempoUrl)
+  lazy val jiraUri      = new URI(jiraUrl)
   private val tempoAuth = "Authorization" -> s"Bearer $tempoToken"
 
   val issueIdFetcher: IssueIdFetcher = new IssueIdFetcher(
@@ -352,14 +355,5 @@ class CommandConnector(
         .value
         .toLongExact
     } yield UpdateLogResponse(id)
-
-  def openTaskKey(taskKey: String, desktop: Desktop)(implicit
-      ec: ExecutionContext
-  ): IorTNec[Response] =
-    IorT
-      .rightT[Future, NonEmptyChain[Info]](
-        desktop.browse(new URI(s"$jiraUrl/browse/$taskKey"))
-      )
-      .map[Response](_ => OpenResponse)
 
 }

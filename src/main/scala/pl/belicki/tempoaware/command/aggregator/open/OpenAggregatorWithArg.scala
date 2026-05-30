@@ -4,7 +4,12 @@ import cats.data._
 import org.jline.reader.Completer
 import org.jline.reader.impl.completer.NullCompleter
 import pl.belicki.tempoaware.command.aggregator.common.TaskKeyArg
-import pl.belicki.tempoaware.command.{Command, CommandConnector, OpenCommand}
+import pl.belicki.tempoaware.command.{
+  Command,
+  CommandConnector,
+  OpenTaskKey,
+  OpenUri
+}
 import pl.belicki.tempoaware.info.Info
 import pl.belicki.tempoaware.info.Info.{IorNecChain, IorTNec}
 
@@ -20,7 +25,10 @@ case class OpenAggregatorWithArg(
   override def toCommand(commandConnector: CommandConnector)(implicit
       ec: ExecutionContext
   ): IorTNec[Command] =
-    finalIssueId.map(OpenCommand(_))
+    finalIssueId.map {
+      case OpenUri(command) => command
+      case otherKey         => OpenTaskKey(otherKey)
+    }
 
   override protected def addTaskKey(
       taskKey: IorNecChain[String]
