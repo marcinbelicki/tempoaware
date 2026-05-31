@@ -4,6 +4,7 @@ import cats.data._
 import cats.implicits.{catsSyntaxTuple2Semigroupal, catsSyntaxTuple5Semigroupal}
 import org.jline.reader.Completer
 import org.jline.reader.impl.completer.NullCompleter
+import pl.belicki.tempoaware.command.aggregator.common.TaskKeyArg
 import pl.belicki.tempoaware.command.{Command, CommandConnector, LogCommand}
 import pl.belicki.tempoaware.fetcher.AccountIdFetcher
 import pl.belicki.tempoaware.info.Info
@@ -156,19 +157,8 @@ case class LogAggregatorWithParams(
   private def finalIssueId(
       commandConnector: CommandConnector
   )(implicit ec: ExecutionContext): IorTNec[Long] =
-    IorT
-      .fromIor[Future](
-        ior = taskKey
-          .flatMap {
-            case Chain(oneKey) => Ior.right(oneKey)
-            case Chain.nil =>
-              Ior.leftNec(
-                Info("There was no taskKey provided.", InfoType.Error)
-              )
-            case _ =>
-              Ior.leftNec(Info("Too many taskKeys provided.", InfoType.Error))
-          }
-      )
+    TaskKeyArg
+      .resolve(taskKey)
       .map(commandConnector.issueIdFetcher.fetchFuture)
       .flatMap(IorT.liftF[Future, NonEmptyChain[Info], Long](_))
 

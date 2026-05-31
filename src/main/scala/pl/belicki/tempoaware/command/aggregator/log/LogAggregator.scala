@@ -1,15 +1,7 @@
 package pl.belicki.tempoaware.command.aggregator.log
 
-import org.jline.reader.Completer
-import pl.belicki.tempoaware.command.aggregator.argument.{BareArgument, TaskKey}
-import pl.belicki.tempoaware.command.aggregator.parameter.{
-  Description,
-  EndDate,
-  EndTime,
-  Parameter,
-  StartDate,
-  StartTime
-}
+import pl.belicki.tempoaware.command.aggregator.common.TaskKeyArg
+import pl.belicki.tempoaware.command.aggregator.parameter._
 import pl.belicki.tempoaware.command.aggregator.{
   Aggregator,
   WithArgumentsAggregator
@@ -18,7 +10,10 @@ import pl.belicki.tempoaware.info.Info.IorNecChain
 
 import java.time.{LocalDate, LocalTime}
 
-trait LogAggregator extends Aggregator with WithArgumentsAggregator {
+trait LogAggregator
+    extends Aggregator
+    with WithArgumentsAggregator
+    with TaskKeyArg {
 
   override val name: String = "log"
 
@@ -32,10 +27,6 @@ trait LogAggregator extends Aggregator with WithArgumentsAggregator {
 
   protected def addDescription(description: IorNecChain[String]): LogAggregator
 
-  protected def addTaskKey(taskKey: IorNecChain[String]): LogAggregator
-
-  protected def taskKeyCompleter: Completer
-
   override protected lazy val parameters: LazyList[Parameter[_, Aggregator]] =
     LazyList(
       new StartTime(addStartTime),
@@ -43,14 +34,6 @@ trait LogAggregator extends Aggregator with WithArgumentsAggregator {
       new EndTime(addEndTime),
       new EndDate(addEndDate),
       new Description(addDescription)
-    )
-
-  override protected lazy val arguments: LazyList[BareArgument[_, Aggregator]] =
-    LazyList(
-      new TaskKey(
-        taskKeyCompleter,
-        addTaskKey
-      )
     )
 
 }

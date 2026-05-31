@@ -21,7 +21,8 @@ import pl.belicki.tempoaware.command.aggregator.{
 import pl.belicki.tempoaware.completer.IssueKeyCompleter
 import play.api.libs.ws.ahc._
 
-import scala.concurrent.Future
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 import scala.util.control.NonFatal
 
 object Tempoaware {
@@ -114,6 +115,8 @@ object Tempoaware {
       wsClient.close()
       system.terminate()
     }
+
+    Await.result(system.whenTerminated, Duration.Inf)
   }
 
 }

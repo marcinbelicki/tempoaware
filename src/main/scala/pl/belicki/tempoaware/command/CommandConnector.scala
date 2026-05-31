@@ -4,12 +4,7 @@ import cats.data.{IorT, NonEmptyChain}
 import cats.implicits.toTraverseOps
 import org.jline.reader.Candidate
 import pl.belicki.tempoaware.command.aggregator.UndoAggregator
-import pl.belicki.tempoaware.command.response.{
-  DeleteLogResponse,
-  LogResponse,
-  Response,
-  UpdateLogResponse
-}
+import pl.belicki.tempoaware.command.response._
 import pl.belicki.tempoaware.fetcher.{
   AccountIdFetcher,
   CachingFetcher,
@@ -25,6 +20,7 @@ import play.api.libs.ws.JsonBodyReadables.readableAsJson
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{StandaloneWSClient, StandaloneWSRequest}
 
+import java.net.URI
 import java.time._
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -35,10 +31,14 @@ class CommandConnector(
     tempoToken: String,
     jiraToken: String,
     jiraUser: String,
-    jiraUrl: String,
+    val jiraUrl: String,
     undoAggregator: UndoAggregator
 )(implicit ec: ExecutionContext, wsClient: StandaloneWSClient) {
 
+  private lazy val tempoUrl =
+    s"$jiraUrl/plugins/servlet/ac/io.tempo.jira/tempo-app"
+  lazy val tempoUri     = new URI(tempoUrl)
+  lazy val jiraUri      = new URI(jiraUrl)
   private val tempoAuth = "Authorization" -> s"Bearer $tempoToken"
 
   val issueIdFetcher: IssueIdFetcher = new IssueIdFetcher(
