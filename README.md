@@ -44,6 +44,20 @@ current time)
 - `-d="Doing sth"` - alternative: `--description="Doing sth"`; description of the worklog (not required, defaults to
 empty string)
 
+### Open
+
+Command for opening the issue or jira/tempo main page:
+
+```
+> open PROJ-1234
+[2025-04-29T20:37:54.318] [INFO] [Tempoaware] Opened the requested asset in the browser.
+```
+
+where:
+- `open` - name of the command
+- `PROJ-1234` - Jira issue key that is going to be open. It autocompletes (by pressing tab key) with keys for issues that were recently logged (
+required). If set to `jira` it will open your jira main page. If set to `tempo` it will open your tempo main page.
+
 ### Undo
 
 Removes last logged time by tempoaware app:
